@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeamFLAT — Investing in a Better Future</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a08;
+    --white: #f5f2ea;
+    --cream: #ede9df;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --rust: #c4521a;
+    --slate: #2a2a26;
+    --mid: #5a5a52;
+    --line: rgba(201,168,76,0.25);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(10,10,8,0.95), transparent);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .nav-contact {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-contact:hover { color: var(--gold); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 6rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 30%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 70% at 20% 80%, rgba(196,82,26,0.06) 0%, transparent 60%),
+      var(--black);
+  }
+
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s ease forwards;
+  }
+
+  .hero-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4.5rem, 13vw, 11rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s ease forwards;
+  }
+
+  .hero-headline em {
+    font-style: normal;
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero-sub {
+    max-width: 480px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(245,242,234,0.6);
+    margin-top: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s ease forwards;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 3rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--mid);
+    writing-mode: vertical-rl;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0;
+    animation: fadeIn 1s 1.2s ease forwards;
+  }
+  .hero-scroll::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  /* ── SECTION COMMONS ── */
+  section { padding: 6rem 3rem; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  /* ── FEATURED: HANGARS ── */
+  .hangars {
+    background: var(--slate);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hangars-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .hangars-text h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 1;
+    letter-spacing: 0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  .hangars-text h2 span { color: var(--gold); }
+
+  .hangars-text p {
+    color: rgba(245,242,234,0.65);
+    line-height: 1.8;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+
+  .badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--line);
+    color: var(--gold);
+    border-radius: 2px;
+  }
+
+  .hangars-visual {
+    position: relative;
+  }
+
+  .airport-card {
+    background: rgba(201,168,76,0.06);
+    border: 1px solid var(--line);
+    padding: 2.5rem;
+    border-radius: 4px;
+    position: relative;
+  }
+
+  .airport-code {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 6rem;
+    line-height: 1;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+  }
+
+  .airport-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-top: 0.5rem;
+  }
+
+  .airport-location {
+    font-size: 0.9rem;
+    color: rgba(245,242,234,0.6);
+    margin-top: 1rem;
+    line-height: 1.6;
+  }
+
+  .runway-line {
+    position: absolute;
+    top: 50%;
+    right: -2rem;
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(to right, var(--gold), transparent);
+    transform: translateY(-50%);
+  }
+
+  /* ── CTA BUTTON ── */
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--black);
+    background: var(--gold);
+    padding: 0.85rem 1.75rem;
+    border-radius: 2px;
+    transition: background 0.2s, gap 0.2s;
+  }
+  .cta:hover { background: var(--gold-light); gap: 1.1rem; }
+  .cta-ghost {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+  }
+  .cta-ghost:hover { background: rgba(201,168,76,0.1); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--line), transparent);
+    margin: 0 3rem;
+  }
+
+  /* ── STARTUPS ── */
+  .startups { max-width: 1100px; margin: 0 auto; }
+
+  .startups-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+  }
+
+  .startups-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 0.03em;
+    line-height: 1;
+  }
+
+  .startups-header p {
+    max-width: 280px;
+    font-size: 0.85rem;
+    color: rgba(245,242,234,0.5);
+    line-height: 1.7;
+    text-align: right;
+  }
+
+  .startups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .startup-card {
+    background: var(--black);
+    padding: 2.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.25s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .startup-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+
+  .startup-card:hover { background: rgba(201,168,76,0.05); }
+  .startup-card:hover::before { transform: scaleX(1); }
+
+  .startup-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--mid);
+    letter-spacing: 0.15em;
+  }
+
+  .startup-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .startup-tagline {
+    font-size: 0.82rem;
+    color: rgba(245,242,234,0.55);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .startup-arrow {
+    font-size: 1.1rem;
+    color: var(--gold);
+    align-self: flex-end;
+    transition: transform 0.2s;
+  }
+
+  .startup-card:hover .startup-arrow { transform: translate(4px, -4px); }
+
+  /* ── TESLA STRIP ── */
+  .tesla-strip {
+    padding: 4rem 3rem;
+    background: var(--slate);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .tesla-strip-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .tesla-t {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    color: var(--gold);
+    line-height: 1;
+    opacity: 0.7;
+  }
+
+  .tesla-strip h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.08em;
+  }
+
+  .tesla-strip p {
+    font-size: 0.8rem;
+    color: rgba(245,242,234,0.5);
+    margin-top: 0.25rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 4rem 3rem 3rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 3rem;
+  }
+
+  .footer-brand .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+  }
+
+  .footer-brand p {
+    font-size: 0.8rem;
+    color: var(--mid);
+    margin-top: 0.5rem;
+    max-width: 260px;
+    line-height: 1.6;
+  }
+
+  .footer-contact h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .footer-contact a {
+    display: block;
+    color: rgba(245,242,234,0.6);
+    text-decoration: none;
+    font-size: 0.88rem;
+    margin-bottom: 0.4rem;
+    transition: color 0.2s;
+  }
+  .footer-contact a:hover { color: var(--gold); }
+
+  .social-row {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .social-btn {
+    width: 36px; height: 36px;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mid);
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.05em;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .social-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .footer-disclaimer {
+    width: 100%;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    color: rgba(90,90,82,0.7);
+    line-height: 1.8;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1.2rem 1.5rem; }
+    section { padding: 4rem 1.5rem; }
+    .hero { padding: 6rem 1.5rem 3rem; }
+    .hero-scroll { display: none; }
+    .hangars-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .startups-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .startups-header p { text-align: left; max-width: 100%; }
+    .tesla-strip { padding: 3rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    footer { padding: 3rem 1.5rem; }
+    .divider { margin: 0 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">TeamFLAT</a>
+  <a href="mailto:info@TeamFLAT.com" class="nav-contact">info@TeamFLAT.com</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <p class="hero-tag">Colorado Springs · Since Day One</p>
+  <h1 class="hero-headline">
+    Disrupting<br>
+    <em>the ordinary.</em>
+  </h1>
+  <p class="hero-sub">
+    From world-class hangars at Meadow Lake Airport to frontier startups reshaping finance, sustainability, and snacking — TeamFLAT backs ventures that matter.
+  </p>
+  <span class="hero-scroll">Scroll ↓</span>
+</section>
+
+<div class="divider"></div>
+
+<!-- HANGARS -->
+<section class="hangars">
+  <div class="hangars-inner">
+    <div class="hangars-text reveal">
+      <div class="section-label">Featured Property</div>
+      <h2>1st Class <span>Hangars</span></h2>
+      <p>
+        Affordable, first-class airplane hangars and storage for all your flying, floating, or rolling toys — located at Meadow Lake Airport, just minutes from Colorado Springs.
+      </p>
+      <div class="badge-row">
+        <span class="badge">Aircraft Storage</span>
+        <span class="badge">Boat & RV</span>
+        <span class="badge">Affordable Rates</span>
+        <span class="badge">KFLY</span>
+      </div>
+      <a href="https://sites.google.com/view/kfly/" target="_blank" class="cta">
+        Explore Hangars →
+      </a>
+    </div>
+    <div class="hangars-visual reveal">
+      <div class="airport-card">
+        <div class="airport-code">KFLY</div>
+        <div class="airport-name">Meadow Lake Airport</div>
+        <div class="airport-location">
+          El Paso County, Colorado<br>
+          Minutes to Colorado Springs, CO
+        </div>
+        <div style="margin-top:2rem; border-top: 1px solid rgba(201,168,76,0.15); padding-top: 1.5rem; display: flex; gap: 2rem;">
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--mid);margin-bottom:0.3rem;">ELEVATION</div>
+            <div style="font-size:1.1rem;color:var(--gold);font-family:'Bebas Neue',sans-serif;letter-spacing:0.05em;">6,874 ft</div>
+          </div>
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--mid);margin-bottom:0.3rem;">TYPE</div>
+            <div style="font-size:1.1rem;color:var(--gold);font-family:'Bebas Neue',sans-serif;letter-spacing:0.05em;">Public</div>
+          </div>
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--mid);margin-bottom:0.3rem;">RUNWAYS</div>
+            <div style="font-size:1.1rem;color:var(--gold);font-family:'Bebas Neue',sans-serif;letter-spacing:0.05em;">3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STARTUPS -->
+<section>
+  <div class="startups">
+    <div class="startups-header reveal">
+      <h2>Disruptive<br>Startups</h2>
+      <p>Ventures we believe in — companies actively changing the future today.</p>
+    </div>
+    <div class="startups-grid">
+
+      <a class="startup-card reveal" href="https://www.greenbutts.com/" target="_blank">
+        <div class="startup-num">01 / SUSTAINABILITY</div>
+        <div class="startup-name">GreenButts</div>
+        <div class="startup-tagline">Dedicated to solving the global problem of cigarette butt pollution with biodegradable alternatives that actually work.</div>
+        <div class="startup-arrow">↗</div>
+      </a>
+
+      <a class="startup-card reveal" href="https://www.onlyalt.com/" target="_blank">
+        <div class="startup-num">02 / FINANCE</div>
+        <div class="startup-name">OnlyAlt</div>
+        <div class="startup-tagline">Increasing the transparency and liquidity of alternative assets — making private markets more accessible to all investors.</div>
+        <div class="startup-arrow">↗</div>
+      </a>
+
+      <a class="startup-card reveal" href="http://share.public.com/TheRonen" target="_blank">
+        <div class="startup-num">03 / MARKETS</div>
+        <div class="startup-name">Public.com</div>
+        <div class="startup-tagline">On a mission to make public markets work for all people — democratizing access to stocks, bonds, and beyond.</div>
+        <div class="startup-arrow">↗</div>
+      </a>
+
+      <a class="startup-card reveal" href="https://south40snacks.com/" target="_blank">
+        <div class="startup-num">04 / FOOD & BEVERAGE</div>
+        <div class="startup-name">South 40 Snacks</div>
+        <div class="startup-tagline">Bringing moments of pleasure and tranquility — one bite, one bag at a time. Premium snacking, elevated.</div>
+        <div class="startup-arrow">↗</div>
+      </a>
+
+      <a class="startup-card reveal" href="https://bumblebeespaces.com/" target="_blank">
+        <div class="startup-num">05 / REAL ESTATE</div>
+        <div class="startup-name">Bumblebee Spaces</div>
+        <div class="startup-tagline">Making space for what matters — innovative micro-living solutions that maximize every square foot of your home.</div>
+        <div class="startup-arrow">↗</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TESLA -->
+<div class="tesla-strip">
+  <div class="tesla-strip-left">
+    <div class="tesla-t">T</div>
+    <div>
+      <h3>Tesla Referral</h3>
+      <p>Get the latest deals and offers — use our referral link.</p>
+    </div>
+  </div>
+  <a href="https://www.tesla.com/referral/ronen41401" target="_blank" class="cta cta-ghost">
+    Claim Tesla Deal →
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="logo">TeamFLAT</div>
+    <p>A Colorado-based holding group investing in hangars, startups, and a better tomorrow.</p>
+  </div>
+
+  <div class="footer-contact">
+    <h4>Get In Touch</h4>
+    <a href="mailto:info@TeamFLAT.com">info@TeamFLAT.com</a>
+    <a href="tel:7192668084">(719) 266-8084 — text / call</a>
+    <div class="social-row">
+      <a class="social-btn" href="https://www.facebook.com/theteamflat" target="_blank" title="Facebook">fb</a>
+      <a class="social-btn" href="https://www.instagram.com/teamflat/" target="_blank" title="Instagram">ig</a>
+      <a class="social-btn" href="https://twitter.com/The_Ronen" target="_blank" title="Twitter/X">x</a>
+      <a class="social-btn" href="https://www.linkedin.com/in/theronen/" target="_blank" title="LinkedIn">in</a>
+    </div>
+  </div>
+
+  <div class="footer-disclaimer">
+    NOT FINANCIAL ADVICE — The information contained on this website and the resources available through this website are not intended as, and shall not be understood or construed as, financial advice. TeamFLAT is not an attorney, accountant, or financial advisor, and the information contained herein is for informational purposes only and not a substitute for professional financial advice.
+  </div>
+</footer>
+
+<script>
+  // Intersection Observer for reveal animations
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.transitionDelay = `${(Array.from(reveals).indexOf(entry.target) % 3) * 0.1}s`;
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
